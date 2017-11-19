@@ -20,10 +20,10 @@ function start(app, options) {
   return require('http').createServer(app);
 }
 
-function create(app) {
+function create(app, api_version) {
   var options = setup();
   http_server = start(app, options).listen(API_PORT, API_HOST);
-  logger.info(`API server (v ${API_VERSION}) running on https://${API_HOST}:${API_PORT}`);
+  logger.info(`API server (v ${api_version}) running on https://${API_HOST}:${API_PORT}`);
   return http_server
 }
 

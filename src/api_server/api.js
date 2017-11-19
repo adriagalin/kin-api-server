@@ -124,7 +124,7 @@ app.all("*", (req, res, next) => {
     }
 });
 
-http_server = server.create(app);
+http_server = server.create(app, API_VERSION);
 
 process.on("SIGINT", () => {
     // PM2 sends a SIGINT for graceful stops
