@@ -6,6 +6,7 @@
 
 const dns_cache = require("./setups/dns_cache");
 const metrics = require("./setups/metrics");
+const server = require("./setups/server");
 
 dns_cache.setup();
 metrics.setup();
@@ -30,8 +31,6 @@ const sources_router = require("./routers/sources");
 const user_router = require("./routers/user");
 
 const express = require("express");
-const fs = require("fs");
-const https = require("https");
 // TODO: need to remove this or patch it upstream so that it doesn't "swallow" errors
 const JWTRedisSession = require("jwt-redis-session");
 const _ = require("lodash");
@@ -125,19 +124,13 @@ app.all("*", (req, res, next) => {
     }
 });
 
-const https_options = {
-    key: fs.readFileSync(secrets.get("HTTPS_KEY_FILE")),
-    cert: fs.readFileSync(secrets.get("HTTPS_CERT_FILE"))
-};
-const https_server = https.createServer(https_options, app);
-https_server.listen(API_PORT, API_HOST);
-logger.info(`API server (v ${API_VERSION}) running on https://${API_HOST}:${API_PORT}`);
+http_server = server.create(app);
 
 process.on("SIGINT", () => {
     // PM2 sends a SIGINT for graceful stops
     logger.debug("Caught SIGINT");
     redis_clients.disconnect();
-    https_server.close(() => {
+    http_server.close(() => {
         process.exit(0);
     });
 });
