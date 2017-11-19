@@ -1,6 +1,6 @@
-const { API_HOST, API_PORT, logger } = require("./config");
+const { API_HOST, API_PORT, logger } = require("../config");
 
-const secrets = require("./secrets");
+const secrets = require("../secrets");
 const fs = require("fs");
 const https = require("https");
 
